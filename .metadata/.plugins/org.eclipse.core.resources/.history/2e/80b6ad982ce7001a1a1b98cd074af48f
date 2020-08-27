@@ -1,0 +1,78 @@
+package com.example.IPLFantasy.web.controllers;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.IPLFantasy.model.LeaderBoard;
+import com.example.IPLFantasy.web.dto.MatchPrediction;
+import com.example.IPLFantasy.web.dto.UserDto;
+import com.example.IPLFantasy.web.repository.MatchPredictionRepository;
+import com.example.IPLFantasy.web.repository.MatchRepository;
+import com.example.IPLFantasy.web.repository.UserRepository;
+
+@RestController
+@RequestMapping("/api")
+public class MatchController {
+	@Autowired
+	MatchRepository matchRepo;
+	
+	@Autowired
+	UserRepository userhRepo;
+	
+	@Autowired
+	MatchPredictionRepository predictionRepository;
+	
+	
+
+	@GetMapping(value = "/match")
+	public @ResponseBody ResponseEntity getMatchList() {
+
+		return new ResponseEntity<>(matchRepo.findAll(), HttpStatus.OK);
+
+	}
+	
+	@GetMapping(value = "/leaderBoard/{userId}")
+	public @ResponseBody ResponseEntity getLeaderBoard(@PathVariable("userId") int userId) {
+		LeaderBoard board=new LeaderBoard();
+		Integer points=userhRepo.findById(userId).get().getPoints();
+        List<UserDto> users=userhRepo.findAll(Sort.by(Direction.DESC, "points"));
+		
+        board.setPoints(points);
+        board.setTopUsers(users.subList(0, 3));
+        for(int i=0;i<users.size();i++) {
+        	if(users.get(i).getId()==userId) {
+        		board.setPosition(i+1);
+        		break;
+        	}
+        }
+		
+		return new ResponseEntity<>(board, HttpStatus.OK);
+
+	}
+	
+	 @PostMapping(value="/prediction")
+	    public @ResponseBody ResponseEntity<String> register(@RequestParam("matchId")  int matchId, @RequestParam("userId") int userId, @RequestParam("winner") String winnerTeam){
+
+		 MatchPrediction prediction= new MatchPrediction();
+		 prediction.setMatchId(matchId);
+		 prediction.setUserId(userId);
+		 prediction.setWinner(winnerTeam);
+		 predictionRepository.save(prediction);
+	     
+	        return new ResponseEntity<>( "Prediction saved successfully.", HttpStatus.OK );
+	    }
+	    
+
+}
