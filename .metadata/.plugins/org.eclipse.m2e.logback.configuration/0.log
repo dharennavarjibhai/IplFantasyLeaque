@@ -3198,3 +3198,4 @@ Caused by: org.eclipse.core.runtime.CoreException: Cannot determine URI for '/IP
 2020-08-26 16:14:03,510 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
 2020-08-26 16:14:03,514 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2020-08-26 16:14:03,515 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\PROJECTSpace\IPLProject\src\test\resources
+2020-08-26 20:12:53,457 [Worker-2: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
